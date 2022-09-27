@@ -32,8 +32,7 @@ services:
             - redis
         extra_hosts:
             - "host:192.168.1.135"
-        env_file:
-            - ./DockerEnv
+
         command: rq worker --url redis://redis:6379
         links:
             - redis
