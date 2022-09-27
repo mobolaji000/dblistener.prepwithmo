@@ -1,0 +1,18 @@
+version: '3'
+services:
+
+    flask-app:
+        image: messages.prepwithmo
+        #container_name: messages.prepwithmo
+        build:
+          context: .
+          dockerfile: Dockerfile.Service.Development
+#        env_file:
+#            - DockerEnv-Dev
+        extra_hosts:
+            - "host:192.168.1.135"
+        restart: always
+        ports:
+            - '5003:5003'
+        volumes:
+            - ./app:/app
