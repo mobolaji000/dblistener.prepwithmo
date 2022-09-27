@@ -13,10 +13,16 @@ services:
         build:
           context: .
           dockerfile: Dockerfile.Service.Development
-
+#          args:
+#              - dbPassword:dbPassword
+#              - dbUserName:dbUserName
+        env_file:
+            - ./DockerEnv
         extra_hosts:
             - "host:192.168.1.135"
-
+#        environment:
+#            - dbPassword:dbPassword
+#            - dbUserName:dbUserName
         restart: always
         ports:
             - '5003:5003'
