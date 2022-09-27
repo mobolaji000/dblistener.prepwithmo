@@ -48,7 +48,7 @@ class Config(object):
             dbPassword = awsInstance.get_secret("do_db_cred", "dev_password")
             SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://'+str(dbUserName)+':'+str(dbPassword)+'@app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com:25060/db'
             SQLALCHEMY_TRACK_MODIFICATIONS = False
-            #SQLALCHEMY_ECHO = True#
+            #SQLALCHEMY_ECHO = True##
 
 
             os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
