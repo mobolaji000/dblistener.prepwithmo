@@ -15,7 +15,7 @@ services:
           dockerfile: Dockerfile.Service.Development
 
         extra_hosts:
-            - "host:app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com"
+            - "host:192.168.1.135"
 
         restart: always
         ports:
@@ -31,7 +31,7 @@ services:
         depends_on:
             - redis
         extra_hosts:
-            - "host:app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com"
+            - "host:192.168.1.135"
 
         command: rq worker --url redis://redis:6379
         links:
