@@ -42,7 +42,7 @@ class Config(object):
         elif os.environ['DEPLOY_REGION'] == 'dev':
 
             os.environ["url_to_start_reminder"] = "http://159.223.174.169:5003/"
-            flask_secret_key = awsInstance.get_secret("vensti_admin", "flask_secret_key")
+            flask_secret_key = awsInstance.get_secret("vensti_admin", "flask_secret_key")#
             SECRET_KEY = awsInstance.get_secret("vensti_admin", "flask_secret_key")
             dbUserName = awsInstance.get_secret("do_db_cred", "dev_username")
             dbPassword = awsInstance.get_secret("do_db_cred", "dev_password")
