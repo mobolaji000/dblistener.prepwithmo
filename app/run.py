@@ -19,8 +19,8 @@ def start_runner():
                     not_started = False
                 print(r.status_code)
             except Exception as e:
-                #print(e)
-                #traceback.print_exc()
+                print(e)
+                traceback.print_exc()
                 print('Server not yet started')
             time.sleep(5)
 
