@@ -1,6 +1,11 @@
 version: '3'
 services:
-
+    redis:
+        image: redis:4.0.6-alpine
+        ports:
+          - "6379:6379"
+        volumes:
+            - ./redis:/redis
 
     flask-app:
         image: messages.prepwithmo
@@ -10,7 +15,7 @@ services:
           dockerfile: Dockerfile.Service.Development
 
         extra_hosts:
-            - "host:192.168.1.135"
+            - "host:app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com"
 
         restart: always
         ports:
@@ -18,3 +23,16 @@ services:
         volumes:
             - ./app:/app
 
+    worker:
+        image: dblistener.messages.prepwithmo
+        build:
+            context: .
+            dockerfile: Dockerfile.Worker.Development
+        depends_on:
+            - redis
+        extra_hosts:
+            - "host:app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com"
+
+        command: rq worker --url redis://redis:6379
+        links:
+            - redis
