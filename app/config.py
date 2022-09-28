@@ -35,7 +35,7 @@ class Config(object):
 
             os.environ["psycopg_url"] = "host"
             os.environ["psycopg_db"] = "mobolajioo"
-            os.environ["psycopg_port"] = "5432"
+            os.environ["psycopg_port"] = "5432"#
 
 
 
