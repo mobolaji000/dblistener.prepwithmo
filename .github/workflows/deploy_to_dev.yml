@@ -80,14 +80,14 @@ jobs:
           cmd=$(curl -v http://159.223.174.169:5003/health) 
 
       - name: Confirm failure
-          if: steps.ping_health_endpoint.outputs.cmd != 200
-          run: |
-            echo "Failed!"
-            exit 1
+        if: steps.ping_health_endpoint.outputs.cmd != 200
+        run: |
+          echo "Failed!"
+          exit 1
 
       - name: Confirm success
-          if: steps.ping_health_endpoint.outputs.cmd == 200
-          run: |
-            echo "Completed!"
+        if: steps.ping_health_endpoint.outputs.cmd == 200
+        run: |
+          echo "Completed!"
 
 
