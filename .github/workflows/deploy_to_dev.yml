@@ -77,7 +77,8 @@ jobs:
       - name: Ping health endpoint
         id: ping_health_endpoint
         run:  |
-          cmd=$(curl -vvv http://159.223.174.169:5003/health) 
+          cmd=$(curl -s -o /dev/null -w "%{http_code}" http://159.223.174.169:5003/health) 
+          
 
       - name: Confirm failure
         if: steps.ping_health_endpoint.outputs.cmd != 200
