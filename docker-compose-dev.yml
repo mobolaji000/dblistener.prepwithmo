@@ -33,7 +33,8 @@ services:
             - redis
         extra_hosts:
             - "host:192.168.1.135"
-
-        command: rq worker --url redis://redis:6379
+        environment:
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+        command: rq worker --url redis://:${REDIS_PASSWORD}@redis:6379
         links:
             - redis

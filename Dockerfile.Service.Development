@@ -59,6 +59,9 @@ ENV dbUserName=${dbUserName}
 ARG dbPassword
 ENV dbPassword=${dbPassword}
 
+ARG REDIS_PASSWORD
+ENV REDIS_PASSWORD=${REDIS_PASSWORD}
+
 
 
 CMD python3 -m flask run --host=0.0.0.0  --port=5003
