@@ -32,7 +32,7 @@ from app import server
 from app.aws import AWSInstance
 
 server.config.from_object(Config)
-server.logger.setLevel(logging.DEBUG)
+server.logger.setLevel(logging.DEBUG)#
 awsInstance = AWSInstance()
 
 
