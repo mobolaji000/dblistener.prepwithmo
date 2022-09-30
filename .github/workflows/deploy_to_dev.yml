@@ -61,7 +61,7 @@ jobs:
         run: |
           scp  -o StrictHostKeyChecking=no -r ./.env mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/app
           echo $(pwd)
-          rsync -rav -e ssh --include '*/' --exclude='.git/*' $(pwd)/ mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/app/ 
+          rsync -ra -e ssh --include '*/' --exclude='.git/*' $(pwd)/ mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/app/ 
           ssh -o StrictHostKeyChecking=no mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }} << 'ENDSSH'
             cd /app
             source .env
@@ -74,7 +74,20 @@ jobs:
           ENDSSH
           
 
-      - name: Completed
-        run: echo "Completed!"
+      - name: Ping health endpoint
+        id: ping_health_endpoint
+        run:  |
+          cmd=$(curl -v http://159.223.174.169:5003/health) 
+
+      - name: Confirm failure
+          if: steps.ping_health_endpoint.outputs.cmd != 200
+          run: |
+            echo "Failed!"
+            exit 1
+
+      - name: Confirm success
+          if: steps.ping_health_endpoint.outputs.cmd == 200
+          run: |
+            echo "Completed!"
 
 
