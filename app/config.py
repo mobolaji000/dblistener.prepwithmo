@@ -51,7 +51,7 @@ class Config(object):
             #SQLALCHEMY_ECHO = True##
 
 
-            os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+            os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'#
             os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 
             os.environ["psycopg_url"] = "app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com"
