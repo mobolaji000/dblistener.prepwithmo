@@ -88,6 +88,7 @@ jobs:
           pwd
           ls
           cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  --connect-timeout 30 --retry 300 --retry-delay 5  https://www.google.com) 
+          echo "::set-output name=cmd::$cmd"
           echo $cmd
 
       - name: Confirm failure
