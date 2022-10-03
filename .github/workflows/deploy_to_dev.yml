@@ -83,6 +83,10 @@ jobs:
             exit
           ENDSSH
           
+      - name: curl
+          uses: wei/curl@master
+          with:
+            args: http://159.223.174.169:5003/health
 
       - name: Ping health endpoint
         id: ping_health_endpoint
