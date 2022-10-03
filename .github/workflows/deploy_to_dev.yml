@@ -24,10 +24,6 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job #
     steps:
-      - name: Ping health endpoint2
-        id: ping_health_endpoint2
-        run:  |
-          cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}" http://159.223.174.169:5003/health) 
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout master
@@ -60,6 +56,13 @@ jobs:
           ssh-agent -a $SSH_AUTH_SOCK > /dev/null
           ssh-keyscan github.com >> ~/.ssh/known_hosts
           ssh-add - <<< "${{ secrets.PRIVATE_KEY }}"
+      
+
+      - name: Ping health endpoint2
+          id: ping_health_endpoint2
+          run: |
+            cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}" http://159.223.174.169:5003/health) 
+
       - name: Build and deploy images on DigitalOcean
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
