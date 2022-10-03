@@ -70,8 +70,8 @@ jobs:
         run: |
           scp  -o StrictHostKeyChecking=no -r ./.env mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/app
           rsync -ra -e ssh --include '*/' --exclude='.git/*' $(pwd)/ mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/app/
-          cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}" http://159.223.174.169:5003/health) 
           ssh -o StrictHostKeyChecking=no mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }} << 'ENDSSH'
+            cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}" http://159.223.174.169:5003/health) 
             cd /app
             source .env
             echo "y" |docker system prune
