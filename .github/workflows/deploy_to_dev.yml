@@ -76,10 +76,10 @@ jobs:
             echo "y" |docker system prune
             echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S service docker stop
             echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S service docker start
+            cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}" http://159.223.174.169:5003/health) 
             docker compose down
             docker compose -f docker-compose-dev.yml build --build-arg SMTP_USERNAME=$SMTP_USERNAME --build-arg SMTP_PASSWORD=$SMTP_PASSWORD --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY --build-arg TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID --build-arg TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN --build-arg TWILIO_MESSAGING_SERVICE_SID=$TWILIO_MESSAGING_SERVICE_SID --build-arg TWILIO_SMS_NUMBER=$STWILIO_SMS_NUMBER --build-arg GOOGLE_CREDENTIALS_JSON=$GOOGLE_CREDENTIALS_JSON --build-arg REDIS_PASSWORD=$REDIS_PASSWORD 
             docker compose -f docker-compose-dev.yml up -d
-            cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}" http://159.223.174.169:5003/health) 
             exit
           ENDSSH
 
