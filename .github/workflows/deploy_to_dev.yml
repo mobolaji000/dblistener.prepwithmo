@@ -87,7 +87,8 @@ jobs:
         run:  |
           pwd
           ls
-          cmd=$(curl https://www.google.com) 
+          cmd=$(curl https://www.google.com)
+          echo $cmd
           
 
       - name: Confirm failure
