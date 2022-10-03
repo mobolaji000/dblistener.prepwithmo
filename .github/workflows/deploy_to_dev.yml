@@ -60,8 +60,6 @@ jobs:
       - name: Ping health endpoint2
         id: ping_health_endpoint2
         run: |
-          pwd
-          ls
           cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}" http://159.223.174.169:5003/health) 
 
       - name: Build and deploy images on DigitalOcean
@@ -85,9 +83,7 @@ jobs:
       - name: Ping health endpoint
         id: ping_health_endpoint
         run:  |
-          pwd
-          ls
-          cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  --connect-timeout 30 --retry 300 --retry-delay 5  https://www.google.com) 
+          cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  http://159.223.174.169:5003/health) 
           echo "::set-output name=cmd::$cmd"
           echo $cmd
 
