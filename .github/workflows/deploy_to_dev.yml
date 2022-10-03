@@ -24,6 +24,11 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job #
     steps:
+      - name: Ping health endpoint2
+        id: ping_health_endpoint2
+        run:  |
+          cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}" http://159.223.174.169:5003/health) 
+
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout master
         uses: actions/checkout@v3
