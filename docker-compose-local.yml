@@ -9,14 +9,20 @@ services:
 
     flask-app:
         image: messages.prepwithmo
-        container_name: messages.prepwithmo
+        #container_name: messages.prepwithmo
         build:
           context: .
-          dockerfile: Dockerfile.Service.Local
+          dockerfile: Dockerfile.Service.Development
+#          args:
+#              - dbPassword:dbPassword
+#              - dbUserName:dbUserName
         env_file:
             - ./DockerEnv
         extra_hosts:
             - "host:192.168.1.135"
+#        environment:
+#            - dbPassword:dbPassword
+#            - dbUserName:dbUserName
         restart: always
         ports:
             - '5003:5003'
@@ -24,7 +30,10 @@ services:
             - ./app:/app
 
     worker:
-        image: messages.prepwithmo:latest
+        image: dblistener.messages.prepwithmo
+        build:
+            context: .
+            dockerfile: Dockerfile.Worker.Development
         depends_on:
             - redis
         extra_hosts:
