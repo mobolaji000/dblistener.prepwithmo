@@ -2,6 +2,7 @@ version: '3'
 services:
     redis:
         image: redis:4.0.6-alpine
+        command: redis-server --requirepass ${REDIS_PASSWORD}
         ports:
           - "6379:6379"
         volumes:
@@ -9,14 +10,14 @@ services:
 
     flask-app:
         image: messages.prepwithmo
-        container_name: messages.prepwithmo
+        #container_name: messages.prepwithmo
         build:
           context: .
-          dockerfile: Dockerfile.Service.Local
-        env_file:
-            - ./DockerEnv
+          dockerfile: Dockerfile.Service.Production
+
         extra_hosts:
             - "host:192.168.1.135"
+
         restart: always
         ports:
             - '5003:5003'
@@ -24,13 +25,16 @@ services:
             - ./app:/app
 
     worker:
-        image: messages.prepwithmo:latest
+        image: dblistener.messages.prepwithmo
+        build:
+            context: .
+            dockerfile: Dockerfile.Worker.Production
         depends_on:
             - redis
         extra_hosts:
             - "host:192.168.1.135"
-        env_file:
-            - ./DockerEnv
-        command: rq worker --url redis://redis:6379
+        environment:
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+        command: rq worker --url redis://:${REDIS_PASSWORD}@redis:6379
         links:
             - redis
