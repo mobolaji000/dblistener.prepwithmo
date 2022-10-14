@@ -20,7 +20,7 @@ services:
 
         restart: always
         ports:
-            - '5003:5003'
+            - '5003'
         volumes:
             - ./dblistener.prepwithmo:/service-app
 
