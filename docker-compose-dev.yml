@@ -10,7 +10,7 @@ services:
 
     flask-app:
         image: messages.prepwithmo
-        #container_name: messages.prepwithmo
+        container_name: service.dblistener.prepwithmo
         build:
           context: .
           dockerfile: Dockerfile.Service.Development
@@ -22,10 +22,11 @@ services:
         ports:
             - '5003:5003'
         volumes:
-            - ./app:/app
+            - ./dblistener.prepwithmo:/service-app
 
     worker:
-        image: dblistener.messages.prepwithmo
+        image: worker.dblistener.prepwithmo
+        container_name: worker.dblistener.prepwithmo
         build:
             context: .
             dockerfile: Dockerfile.Worker.Development
@@ -35,6 +36,8 @@ services:
 #            - "host:app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com:25060"
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
+        volumes:
+            - ./dblistener.prepwithmo:/worker-app
         command: rq worker --url redis://:${REDIS_PASSWORD}@redis:6379
         links:
             - redis

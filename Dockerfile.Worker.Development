@@ -3,7 +3,7 @@ FROM tiangolo/uwsgi-nginx-flask:python3.8
 
 
 # set the working directory in the container
-WORKDIR /app
+WORKDIR /worker-app
 
 # copy the dependencies file to the working directory
 COPY requirements-redis.txt .
@@ -13,7 +13,7 @@ RUN pip3 install -r requirements-redis.txt
 #RUN pip3 install -I --ignore-installed -r requirements.txt
 
 # copy the content of the local app directory to the working directory#
-COPY app/ /app
+COPY app/ /worker-app
 
 #trigger
 

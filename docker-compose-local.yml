@@ -12,7 +12,7 @@ services:
         #container_name: messages.prepwithmo
         build:
           context: .
-          dockerfile: Dockerfile.Service.Development
+          dockerfile: Dockerfile.Service.Local
 #          args:
 #              - dbPassword:dbPassword
 #              - dbUserName:dbUserName
@@ -33,7 +33,7 @@ services:
         image: dblistener.messages.prepwithmo
         build:
             context: .
-            dockerfile: Dockerfile.Worker.Development
+            dockerfile: Dockerfile.Worker.Local
         depends_on:
             - redis
         extra_hosts:
