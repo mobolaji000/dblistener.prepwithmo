@@ -54,16 +54,6 @@ jobs:
           scp  -o StrictHostKeyChecking=no -r ./.env mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/dblistener.prepwithmo
           rsync -ra -e ssh --include '*/' --exclude='.git/*' $(pwd)/ mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/dblistener.prepwithmo/
           ssh -o StrictHostKeyChecking=no mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }} << 'ENDSSH'
-            cd /dblistener.prepwithmo
-            source .env
-            echo "y" |docker system prune
-            echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S service docker stop
-            echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S service docker start
-            docker compose down
-            docker compose -f docker-compose-dev.yml build 
-            docker compose -f docker-compose-dev.yml up
-            exit
-          ENDSSH
 
       - name: Ping health endpoint
         id: ping_health_endpoint
