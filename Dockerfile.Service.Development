@@ -2,7 +2,7 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.8
 
 
-# set the working directory in the container
+# set the working directory in the container#
 WORKDIR /service-app
 
 # copy the dependencies file to the working directory
