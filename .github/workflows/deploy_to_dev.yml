@@ -55,11 +55,12 @@ jobs:
           ssh -o StrictHostKeyChecking=no mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }} << 'ENDSSH'
           echo "About to run ls"
           ls
-          echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chown mobolaji00 /
-          echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chmod 777 /
-          rm -r dblistener.prepwithmo; mkdir dblistener.prepwithmo 
-          echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chown mobolaji00 /dblistener.prepwithmo
-          echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chmod 777 /dblistener.prepwithmo
+          echo "Done running ls"
+#          echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chown mobolaji00 /
+#          echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chmod 777 /
+#          rm -r dblistener.prepwithmo; mkdir dblistener.prepwithmo
+#          echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chown mobolaji00 /dblistener.prepwithmo
+#          echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chmod 777 /dblistener.prepwithmo
           ENDSSH
           
           scp  -o StrictHostKeyChecking=no -r ./.env mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/dblistener.prepwithmo
