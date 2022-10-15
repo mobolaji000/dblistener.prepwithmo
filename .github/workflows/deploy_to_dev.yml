@@ -57,6 +57,7 @@ jobs:
           pwd
           ls
           echo "Done running ls"
+          ENDSSH
 
       - name: Ping health endpoint
         id: ping_health_endpoint
