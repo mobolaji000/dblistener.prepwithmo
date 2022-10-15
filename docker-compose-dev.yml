@@ -16,7 +16,7 @@ services:
           dockerfile: Dockerfile.Service.Development
 
 #        extra_hosts:
-#            - "host:app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com:25060"
+#            - "host:app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com:25060"#
 
         restart: always
         ports:
