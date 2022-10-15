@@ -52,6 +52,7 @@ jobs:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           pwd
+          cd
           ls
           ssh -o StrictHostKeyChecking=no mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }} << 'ENDSSH'
           echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chown mobolaji00 /
