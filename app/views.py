@@ -33,7 +33,7 @@ def hello():
 
 @server.route("/health")
 def health():
-    print("healthy!")
+    logger.debug("healthy!")
     return render_template('health.html')
 
 
