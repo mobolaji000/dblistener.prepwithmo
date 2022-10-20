@@ -21,6 +21,7 @@ services:
         restart: always
         ports:
             - '5003'
+        command: echo $pwd; ls
         volumes:
             - /home/mobolaji00/dblistener.prepwithmo:/service-app
 
