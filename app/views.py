@@ -28,8 +28,8 @@ awsInstance = AWSInstance()
 @server.route("/")
 def hello():
     #server.logger.debug('Processing default request')
-    logger.debug("You have landed on the wrong page")
-    return ("You have landed on the wrong page")
+    logger.debug("You have landed on the main route")
+    return ("You have landed on the main route")
 
 @server.route("/health")
 def health():

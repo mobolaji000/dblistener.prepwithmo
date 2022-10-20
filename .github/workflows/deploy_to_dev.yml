@@ -61,7 +61,7 @@ jobs:
             echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S service docker start
             docker compose down
             docker compose -f docker-compose-dev.yml build 
-            docker compose -f docker-compose-dev.yml up
+            docker compose -f docker-compose-dev.yml up -d
             exit
           ENDSSH
 
