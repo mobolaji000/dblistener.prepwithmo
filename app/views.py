@@ -15,6 +15,9 @@ file_handler = logging.FileHandler(str('logs/')+str(os.path.basename(__file__)[:
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 stream_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
+logger.addHandler(file_handler)
+
+logger.debug("testing logger")
 
 from app import server
 from app.aws import AWSInstance
