@@ -71,7 +71,7 @@ jobs:
           sleep 30
           x=http://${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:5003/health
           echo "The value of \"x\" is now $x."
-          cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  http://${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:5003/health) 
+          cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  http://${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}) 
           echo "::set-output name=cmd::$cmd"
           echo $cmd
 
