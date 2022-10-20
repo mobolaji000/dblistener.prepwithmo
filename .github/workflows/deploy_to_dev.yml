@@ -68,7 +68,7 @@ jobs:
       - name: Ping health endpoint
         id: ping_health_endpoint
         run:  |
-          sleep 30
+          sleep 10
           cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  http://${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:5003/health) 
           echo "::set-output name=cmd::$cmd"
           echo $cmd
