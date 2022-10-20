@@ -20,12 +20,12 @@ ENV LISTEN_PORT 5003
 ENV PYTHONUNBUFFERED=1
 
 ENV FLASK_ENV=development
-ENV FLASK_APP=run
+ENV FLASK_APP=app/run
 
 ENV DEPLOY_REGION=dev
 
 #CMD echo $pwd
 #CMD ls
 #
-#CMD python3 -m flask run --host=0.0.0.0  --port=5003
+CMD python3 -m flask run --host=0.0.0.0  --port=5003
 
