@@ -20,7 +20,7 @@ services:
 
         restart: always
         ports:
-            - '5003'
+            - '5003:5003'
         volumes:
             - /home/mobolaji00/dblistener.prepwithmo:/service-app
 
