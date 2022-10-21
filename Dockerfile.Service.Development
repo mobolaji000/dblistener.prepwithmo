@@ -36,9 +36,6 @@ ENV FLASK_APP=app/run
 
 ENV DEPLOY_REGION=dev
 
-ENV psycopg_url=app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com
-ENV psycopg_db=db
-ENV psycopg_port=25060
 
 #CMD echo $pwd
 #CMD ls
