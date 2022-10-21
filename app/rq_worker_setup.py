@@ -1,6 +1,6 @@
 from redis import Redis
 from rq import Queue
-from dblistener import DBListener#
+from app.dblistener import DBListener#
 import os
 from app import db
 from sqlalchemy.sql import text
