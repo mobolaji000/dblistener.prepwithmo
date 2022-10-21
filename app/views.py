@@ -31,6 +31,9 @@ awsInstance = AWSInstance()
 
 @server.route("/")
 def hello():
+    import os
+    for name, value in os.environ.items():
+        print("{0}: {1}".format(name, value))
     RQWorkerSetup()
     logger.debug("You have landed on the main route")
     return ("You have landed on the main route")
