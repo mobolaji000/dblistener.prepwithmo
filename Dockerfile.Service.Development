@@ -13,7 +13,7 @@ RUN pip3 install -r requirements.txt
 #RUN pip3 install -I --ignore-installed -r requirements.txt
 
 # copy the content of the local app directory to the working directory
-COPY app/ /service-app
+COPY app /service-app
 
 EXPOSE 5003
 ENV LISTEN_PORT 5003
