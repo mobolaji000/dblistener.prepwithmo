@@ -33,8 +33,8 @@ class AWSInstance():
         try:
             region_name = "us-east-2"
 
-            aws_access_key_id = os.environ.get('aws_access_key_id','')
-            aws_secret_access_key = os.environ.get('aws_secret_access_key', '')
+            aws_access_key_id = os.environ.get('AWS_ACCESS_KEY_ID','')
+            aws_secret_access_key = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
 
             logger.debug("aws_access_key_id is: "+str(aws_access_key_id))#
 
