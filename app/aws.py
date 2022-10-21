@@ -29,23 +29,28 @@ class AWSInstance():
         pass
 
     def getInstance(self, service_name):
-        region_name = "us-east-2"
+        try:
+            region_name = "us-east-2"
 
-        aws_access_key_id = os.environ.get('AWS_ACCESS_KEY_ID','')
-        aws_secret_access_key = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
+            aws_access_key_id = os.environ.get('AWS_ACCESS_KEY_ID','')
+            aws_secret_access_key = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
 
-        logger.debug("aws_access_key_id is: "+str(aws_access_key_id))
+            logger.debug("aws_access_key_id is: "+str(aws_access_key_id))
 
-        if aws_access_key_id != '' and aws_secret_access_key != '':
-            session = boto3.session.Session(aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)
-        else:
-            session = boto3.session.Session()
-        client = session.client(
-            service_name=service_name,
-            region_name=region_name
-        )
+            if aws_access_key_id != '' and aws_secret_access_key != '':
+                session = boto3.session.Session(aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)
+            else:
+                session = boto3.session.Session()
+            client = session.client(
+                service_name=service_name,
+                region_name=region_name
+            )
+            return client
+        except Exception as e:
+            logger.exception("Exception in creating aws client")
 
-        return client
+
+
 
     def get_secret(self, secret_name, secret_key):
 
