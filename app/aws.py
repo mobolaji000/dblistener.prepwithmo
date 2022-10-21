@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 stream_handler = logging.StreamHandler()
-file_handler = logging.FileHandler(str('logs/')+'logs'+'-'+str(datetime.datetime.now().strftime('%Y-%m-%d'))+'.log','a')
+file_handler = logging.FileHandler(str('logs/')+'logs'+'-'+str(datetime.datetime.now().strftime('%Y-%m-%d---%H-%M-%S'))+'.log','a')
 
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
 stream_handler.setFormatter(formatter)
