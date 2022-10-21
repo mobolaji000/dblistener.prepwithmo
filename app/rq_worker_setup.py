@@ -5,11 +5,10 @@ import os
 from app import db
 from sqlalchemy.sql import text
 from app.queries import student_table_trigger_text,tutor_table_trigger_text,lead_table_trigger_text,prospect_table_trigger_text
+from log import logger
 
 q = Queue(connection=Redis(host='redis', port=6379, decode_responses=True,password=os.environ.get('REDIS_PASSWORD')),default_timeout=-1)
 result = q.enqueue(DBListener(os.environ.get('psycopg_url'), os.environ.get('psycopg_db'), os.environ.get('psycopg_port'), os.environ.get('dbUserName'),os.environ.get('dbPassword')).dblisten)
-
-
 
 try:
     with db.engine.connect() as con:
@@ -17,8 +16,9 @@ try:
         con.execute(text(tutor_table_trigger_text))
         con.execute(text(lead_table_trigger_text))
         con.execute(text(prospect_table_trigger_text))
-except:
+except Exception as e:
     db.session.rollback()
-    raise
+    logger.exception("Exception in executing triggers")
+    raise e
 finally:
     db.session.close()

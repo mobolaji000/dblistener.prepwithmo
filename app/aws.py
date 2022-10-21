@@ -5,6 +5,9 @@ from botocore.exceptions import ClientError
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+from log import logger
+
+
 
 class AWSInstance():
     def __init__(self):
@@ -15,8 +18,6 @@ class AWSInstance():
 
         aws_access_key_id = os.environ.get('aws_access_key_id','')
         aws_secret_access_key = os.environ.get('aws_secret_access_key', '')
-
-        #print("aws_access_key_id is: "+str(aws_access_key_id))
 
         if aws_access_key_id != '' and aws_secret_access_key != '':
             session = boto3.session.Session(aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)

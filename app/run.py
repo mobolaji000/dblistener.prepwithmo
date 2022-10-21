@@ -3,28 +3,29 @@ import threading
 import time
 import os
 import traceback
+from log import logger
 
 def start_runner():
     def start_loop():
         not_started = True
         while not_started:
-            print('In start loop')
+            logger.debug('In start loop')
             time.sleep(5)
             try:
                 url_to_start_reminder = os.environ.get("url_to_start_reminder")
                 r = requests.get(url_to_start_reminder)
-                print("status code is: "+str(r.status_code))
+                logger.debug("Status code is: "+str(r.status_code))
                 if r.status_code != 500 and r.status_code != 504:
-                    print('Server started, quiting start_loop')
+                    logger.debug('Server started, quiting start_loop')
                     not_started = False
-                print(r.status_code)
+                logger.debug('Status code is: '+str(r.status_code))
             except Exception as e:
-                print(e)
-                traceback.print_exc()
-                print('Server not yet started')
+                # logger.debug(e)
+                # traceback.logger.debug_exc()
+                logger.exception('There has been an exception. Server not yet started')
             time.sleep(5)
 
-    print('Started runner')
+    logger.debug('Started runner')
     thread = threading.Thread(target=start_loop)
     thread.start()
 
