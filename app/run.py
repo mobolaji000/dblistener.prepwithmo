@@ -3,7 +3,7 @@ import threading
 import time
 import os
 import traceback
-from log import logger
+from app.log import logger
 
 def start_runner():
     def start_loop():

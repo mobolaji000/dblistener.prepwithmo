@@ -4,7 +4,7 @@ import os
 import traceback
 from app.aws import AWSInstance
 awsInstance = AWSInstance()
-from log import logger
+from app.log import logger
 
 
 class Config(object):

@@ -3,7 +3,7 @@ from flask import render_template
 import colorama
 colorama.init(strip=False)
 import logging
-from log import logger
+from app.log import logger
 
 from app import server
 from app.aws import AWSInstance

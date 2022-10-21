@@ -2,7 +2,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import select
 import psycopg2
 import traceback
-from log import logger
+from app.log import logger
 
 
 
