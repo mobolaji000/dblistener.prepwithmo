@@ -1,0 +1,5 @@
+2022-10-21 22:04:51,966 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:04:54,559 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:04:57,810 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:04:59,932 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:05:02,869 - app.run - DEBUG - Status code is: 500

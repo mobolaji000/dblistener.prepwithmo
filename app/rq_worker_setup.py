@@ -8,6 +8,7 @@ from app.queries import student_table_trigger_text,tutor_table_trigger_text,lead
 
 import logging
 import datetime
+import pytz
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

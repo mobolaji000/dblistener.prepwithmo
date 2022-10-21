@@ -8,6 +8,7 @@ from email.mime.application import MIMEApplication
 
 import logging
 import datetime
+import pytz
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -35,7 +36,7 @@ class AWSInstance():
             aws_access_key_id = os.environ.get('aws_access_key_id','')
             aws_secret_access_key = os.environ.get('aws_secret_access_key', '')
 
-            logger.debug("aws_access_key_id is: "+str(aws_access_key_id))
+            logger.debug("aws_access_key_id is: "+str(aws_access_key_id))#
 
             if aws_access_key_id != '' and aws_secret_access_key != '':
                 session = boto3.session.Session(aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)

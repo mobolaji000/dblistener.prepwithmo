@@ -1,0 +1,13 @@
+2022-10-21 22:38:33,720 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:38:37,300 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:38:40,652 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:38:42,784 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:38:45,709 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:38:50,276 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:38:50,520 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:38:50,720 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:38:50,918 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:38:52,620 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:38:52,969 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:38:53,233 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:38:53,563 - app.aws - DEBUG - aws_access_key_id is: 

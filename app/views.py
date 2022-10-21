@@ -10,7 +10,7 @@ import pytz
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-stream_handler = logging.StreamHandler()
+stream_handler = logging.StreamHandler()#
 file_handler = logging.FileHandler(str('logs/')+'logs'+'-'+str(pytz.timezone('US/Central').localize(datetime.datetime.now()).strftime('%Y-%m-%d---%H-%M'))+'.log','a')
 
 

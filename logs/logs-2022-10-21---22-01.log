@@ -1,0 +1,2745 @@
+2022-10-21 22:01:02,073 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:05,845 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:07,521 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:14,283 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:16,754 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:20,084 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:22,219 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:26,758 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:28,449 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:32,372 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:32,510 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:33,139 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:33,847 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:33,914 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:34,519 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:37,548 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:37,650 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:38,069 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:38,960 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:39,033 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:39,474 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:42,687 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:42,789 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:43,235 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:44,074 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:44,177 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:44,617 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:47,827 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:47,938 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:48,423 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:49,216 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:49,309 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:49,755 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:52,986 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:53,065 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:53,520 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:54,343 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:54,415 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:54,827 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:58,110 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:58,174 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:58,521 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:01:59,450 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:01:59,527 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:01:59,938 - app.aws - DEBUG - aws_access_key_id is: 
+2022-10-21 22:02:03,210 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:03,296 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:04,568 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:04,646 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:08,341 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:08,438 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:09,690 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:09,771 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:13,478 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:13,550 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:14,815 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:14,895 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:18,594 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:18,664 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:19,937 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:20,015 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:23,706 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:23,781 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:25,130 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:25,213 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:28,814 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:28,882 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:30,254 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:30,363 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:33,915 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:33,997 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:35,394 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:35,485 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:39,040 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:39,120 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:40,519 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:40,583 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:44,151 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:44,227 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:45,614 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:45,689 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:49,267 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:49,357 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:50,747 - app.rq_worker_setup - ERROR - Exception in executing triggers
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: near "OR": syntax error
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/service-app/app/rq_worker_setup.py", line 32, in __init__
+    con.execute(text(student_table_trigger_text))
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1380, in execute
+    return meth(self, multiparams, params, _EMPTY_EXECUTION_OPTS)
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 333, in _execute_on_connection
+    return connection._execute_clauseelement(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1572, in _execute_clauseelement
+    ret = self._execute_context(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1943, in _execute_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 2124, in _handle_dbapi_exception
+    util.raise_(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/util/compat.py", line 208, in raise_
+    raise exception
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/base.py", line 1900, in _execute_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.8/site-packages/sqlalchemy/engine/default.py", line 736, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) near "OR": syntax error
+[SQL: 
+CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
+   DECLARE
+    row RECORD;
+    output TEXT;
+
+    BEGIN
+    -- Checking the Operation Type
+    IF (TG_OP = 'DELETE') THEN
+      row = OLD;
+    ELSE
+      row = NEW;
+    END IF;
+
+    output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.student_id || '-Basics End';
+
+    IF (OLD.student_first_name IS DISTINCT FROM NEW.student_first_name or
+        OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
+        OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
+        OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
+        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
+    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+    end if;
+
+    IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
+        OLD.parent_1_first_name IS DISTINCT FROM NEW.parent_1_first_name or
+        OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
+        OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
+        OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
+                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+    end if;
+
+    IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
+        OLD.parent_2_first_name IS DISTINCT FROM NEW.parent_2_first_name or
+        OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
+        OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
+        OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
+                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+    end if;
+
+    PERFORM pg_notify('student_table_changed',output);
+
+    -- Returning null because it is an after trigger.
+    RETURN NULL;
+    END;
+   $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER update on student for each row execute procedure student_table_trigger();
+--DROP TRIGGER IF EXISTS student_table_trigger ON student; CREATE TRIGGER student_table_trigger AFTER insert or update or delete on student for each row execute procedure student_table_trigger();
+
+]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2022-10-21 22:02:50,903 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:54,431 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:55,982 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:02:59,485 - app.run - DEBUG - Status code is: 500
+2022-10-21 22:03:01,046 - app.run - DEBUG - Status code is: 500
