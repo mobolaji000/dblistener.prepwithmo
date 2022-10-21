@@ -5,7 +5,22 @@ import os
 from app import db
 from sqlalchemy.sql import text
 from app.queries import student_table_trigger_text,tutor_table_trigger_text,lead_table_trigger_text,prospect_table_trigger_text
-from app.log import logger
+
+import logging
+import datetime
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+stream_handler = logging.StreamHandler()
+file_handler = logging.FileHandler(str('logs/')+'logs'+'-'+str(datetime.datetime.now().strftime('%Y-%m-%d'))+'.log','a')
+
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+stream_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
+
+logger.addHandler(stream_handler)
+logger.addHandler(file_handler)
 
 q = Queue(connection=Redis(host='redis', port=6379, decode_responses=True,password=os.environ.get('REDIS_PASSWORD')),default_timeout=-1)
 result = q.enqueue(DBListener(os.environ.get('psycopg_url'), os.environ.get('psycopg_db'), os.environ.get('psycopg_port'), os.environ.get('dbUserName'),os.environ.get('dbPassword')).dblisten)
