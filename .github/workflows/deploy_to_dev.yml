@@ -84,6 +84,7 @@ jobs:
       - name: Confirm success
         if: steps.ping_health_endpoint.outputs.cmd == 200
         run: |
+          echo ${{steps.ping_health_endpoint.outputs.cmd}}
           echo "Completed!"
 
 
