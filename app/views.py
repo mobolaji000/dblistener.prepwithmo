@@ -2,7 +2,6 @@ from app.config import Config
 from flask import render_template
 import colorama
 colorama.init(strip=False)
-import logging
 
 import logging
 import datetime
@@ -22,6 +21,7 @@ logger.addHandler(file_handler)
 
 from app import server
 from app.aws import AWSInstance
+from app.rq_worker_setup import RQWorkerSetup
 
 server.config.from_object(Config)
 server.logger.setLevel(logging.DEBUG)
@@ -29,12 +29,13 @@ awsInstance = AWSInstance()
 
 @server.route("/")
 def hello():
+    RQWorkerSetup()
     logger.debug("You have landed on the main route")
     return ("You have landed on the main route")
 
 @server.route("/health")
 def health():
-    logger.debug("healthy!")
+    logger.debug("Container is up and setup was completed successfully!")
     return render_template('health.html')
 
 
