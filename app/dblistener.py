@@ -103,6 +103,7 @@ class DBListener():
         if operation == 'UPDATE':  # or operation == "INSERT":
 
             if student_details:
+                logger.debug(student_details)
                 student_first_name = student_details.split('-')[0]
                 student_last_name = student_details.split('-')[1]
                 student_phone_number = student_details.split('-')[2]
