@@ -91,7 +91,7 @@ class DBListener():
                         self.updateRecipientFromProspect(id=id, details=details, operation=operation)
 
         except Exception as e:
-            logger.exception("Error dblisten")#
+            logger.exception("Error dblisten")
 
 
     def updateRecipientFromStudentAndParent(self,id=None, details=None, operation=None):
