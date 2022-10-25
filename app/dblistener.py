@@ -38,8 +38,6 @@ class DBListener():
         self.url = url
         self.db = db
         self.port = port
-        self.tt = username
-        self.vv = password
 
 
 

@@ -31,11 +31,15 @@ awsInstance = AWSInstance()
 
 @server.route("/")
 def hello():
-    # import os
-    # for name, value in os.environ.items():
-    #     print("{0}: {1}".format(name, value))
+    dd = {}
+    import os
+    for name, value in os.environ.items():
+        dd[name] = value
+        print("{0}: {1}".format(name, value))
+
     RQWorkerSetup()
     logger.debug("You have landed on the main route")
+    return (str(dd))
     return ("You have landed on the main route")
 
 @server.route("/health")

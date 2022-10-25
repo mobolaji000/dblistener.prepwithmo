@@ -26,7 +26,7 @@ logger.addHandler(file_handler)
 class RQWorkerSetup():
     def __init__(self):
         q = Queue(connection=Redis(host='redis', port=6379, decode_responses=True,password=os.environ.get('REDIS_PASSWORD')),default_timeout=-1)
-        result = q.enqueue(DBListener(os.environ.get('psycopg_url'), os.environ.get('psycopg_db'), os.environ.get('psycopg_port'), os.environ.get('DBUSERNAME'),os.environ.get('DBPASSWORD')).dblisten)
+        #result = q.enqueue(DBListener(os.environ.get('psycopg_url'), os.environ.get('psycopg_db'), os.environ.get('psycopg_port'), os.environ.get('DBUSERNAME'),os.environ.get('DBPASSWORD')).dblisten)
 
         try:
             with db.engine.connect() as con:
