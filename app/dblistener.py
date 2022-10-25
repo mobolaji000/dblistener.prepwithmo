@@ -50,6 +50,8 @@ class DBListener():
     def dblisten(self):
         try:
 
+            print("ti is {}".format(self.password))
+
             self.connection = psycopg2.connect(host=self.url, user=self.username,
                                                password=self.password, dbname=self.db, port=self.port,
                                                keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=5)
