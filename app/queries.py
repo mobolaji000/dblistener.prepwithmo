@@ -18,8 +18,7 @@ CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
         OLD.student_last_name IS DISTINCT FROM NEW.student_last_name or
         OLD.student_phone_number IS DISTINCT FROM NEW.student_phone_number or
         OLD.student_email IS DISTINCT FROM NEW.student_email) THEN
-        output = output || 'Student Details Start-' || row.student_first_name || '-' ||
-    row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email|| '-Student Details End';
+        output = output || 'Student Details Start-' || row.student_first_name || '-' || row.student_last_name || '-' || row.student_phone_number || '-' || row.student_email || '-' || row.is_active || '-Student Details End';
     end if;
 
     IF (OLD.parent_1_salutation IS DISTINCT FROM NEW.parent_1_salutation or
@@ -27,8 +26,7 @@ CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
         OLD.parent_1_last_name IS DISTINCT FROM NEW.parent_1_last_name or
         OLD.parent_1_phone_number IS DISTINCT FROM NEW.parent_1_phone_number or
         OLD.parent_1_email IS DISTINCT FROM NEW.parent_1_email) THEN
-        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name ||
-                 '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-Parent_1 Details End' ;
+        output = output || 'Parent_1 Details Start-' || row.parent_1_salutation|| '-' || row.parent_1_first_name || '-' || row.parent_1_last_name || '-' || row.parent_1_phone_number || '-' || row.parent_1_email || '-' || row.is_active || '-Parent_1 Details End' ;
     end if;
 
     IF (OLD.parent_2_salutation IS DISTINCT FROM NEW.parent_2_salutation or
@@ -36,8 +34,7 @@ CREATE OR REPLACE FUNCTION student_table_trigger() RETURNS trigger AS $$
         OLD.parent_2_last_name IS DISTINCT FROM NEW.parent_2_last_name or
         OLD.parent_2_phone_number IS DISTINCT FROM NEW.parent_2_phone_number or
         OLD.parent_2_email IS DISTINCT FROM NEW.parent_2_email) THEN
-        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name ||
-                 '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-Parent_2 Details End';
+        output = output || 'Parent_2 Details Start-' || row.parent_2_salutation|| '-' || row.parent_2_first_name || '-' || row.parent_2_last_name || '-' || row.parent_2_phone_number || '-' || row.parent_2_email || '-' || row.is_active || '-Parent_2 Details End';
     end if;
 
     PERFORM pg_notify('student_table_changed',output);
@@ -69,8 +66,7 @@ CREATE OR REPLACE FUNCTION tutor_table_trigger() RETURNS trigger AS $$
 
     output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.user_id || '-Basics End';
 
-    output = output || 'Tutor Details Start-' || row.tutor_first_name || '-' ||
-    row.tutor_last_name || '-' || row.tutor_phone_number || '-' || row.tutor_email|| '-' || row.is_active || '-Tutor Details End';
+    output = output || 'Tutor Details Start-' || row.tutor_first_name || '-' || row.tutor_last_name || '-' || row.tutor_phone_number || '-' || row.tutor_email|| '-' || row.is_active || '-Tutor Details End';
 
     PERFORM pg_notify('tutor_table_changed',output);
 
@@ -132,8 +128,7 @@ CREATE OR REPLACE FUNCTION prospect_table_trigger() RETURNS trigger AS $$
 
     output = 'Basics Start-' || 'OPERATION = ' || TG_OP || ' and ID = ' || row.prospect_id || '-Basics End';
 
-    output = output || 'Prospect Details Start-' || row.prospect_first_name || '-' ||
-    row.prospect_last_name || '-' || row.prospect_phone_number || '-' || row.prospect_email|| '-' || '-Prospect Details End';
+    output = output || 'Prospect Details Start-' || row.prospect_first_name || '-' || row.prospect_last_name || '-' || row.prospect_phone_number || '-' || row.prospect_email|| '-' || '-Prospect Details End';
 
     PERFORM pg_notify('prospect_table_changed',output);
 
