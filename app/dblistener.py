@@ -49,10 +49,6 @@ class DBListener():
 #But editing databases is a usecase faced often enough (e.g. student inserts wrong email on signup) and the listners here propagte such changes as necessary
     def dblisten(self):
         try:
-
-
-            print("dff {}".format(self.__dict__))
-
             self.connection = psycopg2.connect(host=self.url, user=self.username,
                                                password=self.password, dbname=self.db, port=self.port,
                                                keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=5)
