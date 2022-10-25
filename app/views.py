@@ -40,7 +40,7 @@ def hello():
     RQWorkerSetup()
     logger.debug("You have landed on the main route")
     return (str(dd))
-    return ("You have landed on the main route")
+    #return ("You have landed on the main route")
 
 @server.route("/health")
 def health():
