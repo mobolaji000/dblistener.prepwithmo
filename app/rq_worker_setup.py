@@ -25,7 +25,7 @@ logger.addHandler(file_handler)
 
 class RQWorkerSetup():
     def __init__(self):
-        pass
+        #pass
         dd = {}
         import os
         for name, value in os.environ.items():
