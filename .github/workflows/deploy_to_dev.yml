@@ -74,21 +74,21 @@ jobs:
         id: ping_health_endpoint
         run:  |
           sleep 5
-          cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  http://${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:5003/health) 
-          echo "::set-output name=cmd::$cmd"
-          echo $cmd
+          status_code_1=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  http://${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:5003/health) 
+          echo "::set-output name=status_code_1::$status_code_1"
+          echo $status_code_1
 
       - name: Confirm failure
-        if: steps.ping_health_endpoint.outputs.cmd != 200
+        if: steps.ping_health_endpoint.outputs.status_code_1 != 200
         run: |
-          echo ${{steps.ping_health_endpoint.outputs.cmd}}
+          echo ${{steps.ping_health_endpoint.outputs.status_code_1}}
           echo "Failed!"
           exit 1
 
       - name: Confirm success
-        if: steps.ping_health_endpoint.outputs.cmd == 200
+        if: steps.ping_health_endpoint.outputs.status_code_1 == 200
         run: |
-          echo ${{steps.ping_health_endpoint.outputs.cmd}}
+          echo ${{steps.ping_health_endpoint.outputs.status_code_1}}
           echo "Completed!"
 
 

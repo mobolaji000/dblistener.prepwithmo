@@ -15,8 +15,8 @@ services:
           context: .
           dockerfile: Dockerfile.Service.Development
 
-#        extra_hosts:
-#            - "host:app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com:25060"#
+        extra_hosts:
+            - "redis:redis"#
 
         restart: always
         environment:
@@ -35,8 +35,8 @@ services:
             dockerfile: Dockerfile.Worker.Development
         depends_on:
             - redis
-#        extra_hosts:
-#            - "host:app-27fee962-3fa3-41cb-aecc-35d29dbd568e-do-user-9096158-0.b.db.ondigitalocean.com:25060"
+        extra_hosts:
+            - "redis:redis"#
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
         volumes:
