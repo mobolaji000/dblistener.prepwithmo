@@ -21,8 +21,8 @@ services:
           context: .
           dockerfile: Dockerfile.Service.Development
 
-#        extra_hosts:
-#            - "redis:${DIGITAL_OCEAN_IP_ADDRESS}"#
+        extra_hosts:
+            - "redis:159.223.174.169"##
 
         restart: always
         environment:
@@ -39,8 +39,8 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.Worker.Development
-            extra_hosts:
-                - "redis:159.223.174.169"##
+        extra_hosts:
+            - "redis:159.223.174.169"##
         depends_on:
             - redis
 
