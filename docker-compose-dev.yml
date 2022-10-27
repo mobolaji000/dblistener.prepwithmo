@@ -36,7 +36,7 @@ services:
         depends_on:
             - redis
         extra_hosts:
-            - "redis:${DIGITAL_OCEAN_IP_ADDRESS}"#
+            - "redis:159.223.174.169"#
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
             - DIGITAL_OCEAN_IP_ADDRESS=${DIGITAL_OCEAN_IP_ADDRESS}
