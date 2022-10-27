@@ -15,8 +15,8 @@ services:
           context: .
           dockerfile: Dockerfile.Service.Development
 
-        extra_hosts:
-            - "redis:redis"#
+#        extra_hosts:
+#            - "redis:${DIGITAL_OCEAN_IP_ADDRESS}"#
 
         restart: always
         environment:
@@ -36,11 +36,13 @@ services:
         depends_on:
             - redis
         extra_hosts:
-            - "redis:redis"#
+            - "redis:${DIGITAL_OCEAN_IP_ADDRESS}"#
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
         volumes:
             - /home/mobolaji00/dblistener.prepwithmo:/worker-app
-        command: rq worker --url redis://:${REDIS_PASSWORD}@redis:6379
+        command: >
+            echo ${DIGITAL_OCEAN_IP_ADDRESS}
+            && rq worker --url redis://:${REDIS_PASSWORD}@redis:6379
         links:
             - redis

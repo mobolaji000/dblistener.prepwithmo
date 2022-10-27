@@ -39,6 +39,7 @@ jobs:
           echo DBUSERNAME=${{ secrets.DBUSERNAME }} >> .env
           echo DBPASSWORD=${{ secrets.DBPASSWORD }} >> .env
           echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
+          echo DIGITAL_OCEAN_IP_ADDRESS=${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }} >> .env
 
       - name: Add the private SSH key to the ssh-agent
         env:
