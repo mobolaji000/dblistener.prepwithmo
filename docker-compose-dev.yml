@@ -14,26 +14,26 @@ services:
         volumes:
             - ./redis:/redis
 
-    flask-app:
-        image: messages.prepwithmo
-        container_name: service.dblistener.prepwithmo
-        build:
-          context: .
-          dockerfile: Dockerfile.Service.Development
-
-        extra_hosts:
-            - "redis:159.223.174.169"###
-
-        depends_on:
-            - worker
-        restart: always
-        environment:
-            - DBUSERNAME=${DBUSERNAME}
-            - DBPASSWORD=${DBPASSWORD}
-        ports:
-            - '5003:5003'
-        volumes:
-            - /home/mobolaji00/dblistener.prepwithmo:/service-app
+#    flask-app:
+#        image: messages.prepwithmo
+#        container_name: service.dblistener.prepwithmo
+#        build:
+#          context: .
+#          dockerfile: Dockerfile.Service.Development
+#
+#        extra_hosts:
+#            - "redis:159.223.174.169"###
+#
+#        depends_on:
+#            - worker
+#        restart: always
+#        environment:
+#            - DBUSERNAME=${DBUSERNAME}
+#            - DBPASSWORD=${DBPASSWORD}
+#        ports:
+#            - '5003:5003'
+#        volumes:
+#            - /home/mobolaji00/dblistener.prepwithmo:/service-app
 
     worker:
         image: worker.dblistener.prepwithmo
