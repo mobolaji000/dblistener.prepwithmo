@@ -24,6 +24,8 @@ services:
         extra_hosts:
             - "redis:159.223.174.169"##
 
+        depends_on:
+            - worker
         restart: always
         environment:
             - DBUSERNAME=${DBUSERNAME}
