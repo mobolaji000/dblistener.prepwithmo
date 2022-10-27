@@ -39,10 +39,11 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.Worker.Development
+            extra_hosts:
+                - "redis:159.223.174.169"##
         depends_on:
             - redis
-        extra_hosts:
-            - "redis:159.223.174.169"##
+
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
             - DIGITAL_OCEAN_IP_ADDRESS=${DIGITAL_OCEAN_IP_ADDRESS}
