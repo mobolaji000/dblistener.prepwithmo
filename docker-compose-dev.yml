@@ -6,6 +6,7 @@ networks:
 services:
     redis:
         image: redis:4.0.6-alpine
+        container_name: redis.dblistener.prepwithmo
         command: redis-server --requirepass ${REDIS_PASSWORD}
         ports:
           - "6379:6379"
@@ -41,8 +42,8 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.Worker.Development
-        extra_hosts:
-            - "redis:159.223.174.169"##
+#        extra_hosts:
+#            - "redis:159.223.174.169"##
         depends_on:
             - redis
 
