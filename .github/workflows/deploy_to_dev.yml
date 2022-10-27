@@ -59,7 +59,9 @@ jobs:
             cd /home/mobolaji00/dblistener.prepwithmo
             echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chmod 775 /home/mobolaji00/dblistener.prepwithmo
             source .env
-            echo "y" |docker system prune
+            echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S systemctl restart vector
+            echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S systemctl status vector
+            echo "y" | docker system prune
             echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S service docker stop
             echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S service docker start
             docker compose down
