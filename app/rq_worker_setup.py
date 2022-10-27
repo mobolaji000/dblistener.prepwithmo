@@ -32,7 +32,7 @@ class RQWorkerSetup():
             dd[name] = value
             print("{0}: {1}".format(name, value))
         #return (str(dd))
-        q = Queue(connection=Redis(host='159.223.174.169', port=6379, decode_responses=True,password=os.environ.get('REDIS_PASSWORD')),default_timeout=-1)
+        q = Queue(connection=Redis(host='redis', port=6379, decode_responses=True,password=os.environ.get('REDIS_PASSWORD')),default_timeout=-1)
         logger.debug(q.__dict__)
         result = q.enqueue(DBListener(os.environ.get('psycopg_url'), os.environ.get('psycopg_db'), os.environ.get('psycopg_port'), os.environ.get('DBUSERNAME'),os.environ.get('DBPASSWORD')).dblisten)
 
