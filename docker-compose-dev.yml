@@ -40,3 +40,5 @@ services:
         volumes:
             - /home/mobolaji00/dblistener.prepwithmo:/worker-app
         command: rq worker --url redis://:${REDIS_PASSWORD}@redis:6379
+        links:
+            - redis
