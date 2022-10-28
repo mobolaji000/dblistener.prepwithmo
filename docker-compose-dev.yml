@@ -52,7 +52,7 @@ services:
             - DIGITAL_OCEAN_IP_ADDRESS=${DIGITAL_OCEAN_IP_ADDRESS}
         volumes:
             - /home/mobolaji00/dblistener.prepwithmo:/worker-app
-        command: rq worker --url redis://${REDIS_PASSWORD}@redis:6379
+        command: rq worker --url redis://:${REDIS_PASSWORD}@redis:6379/
         networks:
             - redis-net
         links:
