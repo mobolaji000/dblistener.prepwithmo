@@ -26,7 +26,7 @@ def start_runner():
     def start_loop():
         not_started = True
         while not_started:
-            time.sleep(5)
+            time.sleep(15)
             try:
                 url_to_start_reminder = os.environ.get("url_to_start_reminder")
                 r = requests.get(url_to_start_reminder)
