@@ -1,8 +1,4 @@
 version: '3'
-
-networks:
-  redis-net:
-    driver: bridge
 services:
     redis:
         image: redis:4.0.6-alpine
@@ -10,31 +6,25 @@ services:
         command: redis-server --requirepass ${REDIS_PASSWORD}
         ports:
           - "6379:6379"
-        networks:
-            - redis-net
         volumes:
             - ./redis:/redis
 
-#    flask-app:
-#        image: messages.prepwithmo
-#        container_name: service.dblistener.prepwithmo
-#        build:
-#          context: .
-#          dockerfile: Dockerfile.Service.Development
-#
-#        extra_hosts:
-#            - "redis:159.223.174.169"###
-#
-#        depends_on:
-#            - worker
-#        restart: always
-#        environment:
-#            - DBUSERNAME=${DBUSERNAME}
-#            - DBPASSWORD=${DBPASSWORD}
-#        ports:
-#            - '5003:5003'
-#        volumes:
-#            - /home/mobolaji00/dblistener.prepwithmo:/service-app#
+    flask-app:
+        image: messages.prepwithmo
+        container_name: service.dblistener.prepwithmo
+        build:
+          context: .
+          dockerfile: Dockerfile.Service.Development
+        depends_on:
+            - worker
+        restart: always
+        environment:
+            - DBUSERNAME=${DBUSERNAME}
+            - DBPASSWORD=${DBPASSWORD}
+        ports:
+            - '5003:5003'
+        volumes:
+            - /home/mobolaji00/dblistener.prepwithmo:/service-app
 
     worker:
         image: worker.dblistener.prepwithmo
@@ -42,18 +32,11 @@ services:
         build:
             context: .
             dockerfile: Dockerfile.Worker.Development
-#        extra_hosts:
-#            - "redis:159.223.174.169"##
         depends_on:
             - redis
-
         environment:
             - REDIS_PASSWORD=${REDIS_PASSWORD}
             - DIGITAL_OCEAN_IP_ADDRESS=${DIGITAL_OCEAN_IP_ADDRESS}
         volumes:
             - /home/mobolaji00/dblistener.prepwithmo:/worker-app
         command: rq worker --url redis://:${REDIS_PASSWORD}@redis:6379/
-        networks:
-            - redis-net
-        links:
-            - redis
