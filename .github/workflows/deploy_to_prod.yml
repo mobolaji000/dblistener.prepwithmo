@@ -4,11 +4,11 @@ name: Deploy To Prod Digital Ocean Droplet
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Triggers the workflow on push or pull request events but only for the "prod" branch
   push:
     branches: [ "main" ]
 #  pull_request:
-#    branches: [ "main" ]
+#    branches: [ "prod" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -18,9 +18,9 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     name: Build Docker Images
-    # The type of runner that the job will run on
+    # The type of runner that the job will run on#
     runs-on: ubuntu-latest
-    environment: main
+    environment: prod
 
     # Steps represent a sequence of tasks that will be executed as part of the job #
     steps:
@@ -29,15 +29,17 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v3
         with:
-          ref: main
+          ref: prod
 
       - name: Add environment variables to .env
         run: |
           echo DEBUG=0 >> .env
           echo AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} >> .env
           echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} >> .env
+          echo DBUSERNAME=${{ secrets.DBUSERNAME }} >> .env
+          echo DBPASSWORD=${{ secrets.DBPASSWORD }} >> .env
           echo REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} >> .env
-       
+          echo DIGITAL_OCEAN_IP_ADDRESS=${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }} >> .env
 
       - name: Add the private SSH key to the ssh-agent
         env:
@@ -52,16 +54,17 @@ jobs:
         env:
           SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
-          scp  -o StrictHostKeyChecking=no -r ./.env mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/app
-          rsync -ra -e ssh --include '*/' --exclude='.git/*' $(pwd)/ mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/app/
+          scp  -o StrictHostKeyChecking=no -r ./.env mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/home/mobolaji00/dblistener.prepwithmo
+          rsync -ra -e ssh --include '*/' --exclude='.git/*' $(pwd)/ mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:/home/mobolaji00/dblistener.prepwithmo/
           ssh -o StrictHostKeyChecking=no mobolaji00@${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }} << 'ENDSSH'
-            cd /app
+            cd /home/mobolaji00/dblistener.prepwithmo
+            echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S chmod 775 /home/mobolaji00/dblistener.prepwithmo
             source .env
-            echo "y" |docker system prune
-            echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S service docker stop
-            echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S service docker start
-            docker compose down
-            docker compose -f docker-compose-prod.yml build
+            docker stop $(docker ps -a -q)
+            docker rm $(docker ps -a -q)
+            echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S systemctl restart vector
+            echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S systemctl status vector
+            docker compose -f docker-compose-prod.yml build --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY --build-arg DBUSERNAME=$DBUSERNAME --build-arg DBPASSWORD=$DBPASSWORD  --build-arg REDIS_PASSWORD=$REDIS_PASSWORD  
             docker compose -f docker-compose-prod.yml up -d
             exit
           ENDSSH
@@ -69,20 +72,22 @@ jobs:
       - name: Ping health endpoint
         id: ping_health_endpoint
         run:  |
-          sleep 30
-          cmd=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  http://159.223.174.169:5003/health) 
-          echo "::set-output name=cmd::$cmd"
-          echo $cmd
+          sleep 5
+          status_code_1=$(curl -v -s -o /dev/null  -H 'Accept: text/html' -H 'Cache-Control: no-cache' -H 'Connection: keep-alive' -w "%{http_code}"  http://${{ secrets.DIGITAL_OCEAN_IP_ADDRESS }}:5003/health) 
+          echo "::set-output name=status_code_1::$status_code_1"
+          echo $status_code_1
 
       - name: Confirm failure
-        if: steps.ping_health_endpoint.outputs.cmd != 200
+        if: steps.ping_health_endpoint.outputs.status_code_1 != 200
         run: |
-          echo ${{steps.ping_health_endpoint.outputs.cmd}}
+          echo ${{steps.ping_health_endpoint.outputs.status_code_1}}
           echo "Failed!"
           exit 1
 
       - name: Confirm success
-        if: steps.ping_health_endpoint.outputs.cmd == 200
+        if: steps.ping_health_endpoint.outputs.status_code_1 == 200
         run: |
+          echo ${{steps.ping_health_endpoint.outputs.status_code_1}}
           echo "Completed!"
+
 

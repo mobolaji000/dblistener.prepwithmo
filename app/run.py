@@ -4,27 +4,41 @@ import time
 import os
 import traceback
 
+import logging
+import datetime
+import pytz
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+stream_handler = logging.StreamHandler()
+file_handler = logging.FileHandler(str('logs/')+'logs'+'-'+str(pytz.timezone('US/Central').localize(datetime.datetime.now()).strftime('%Y-%m-%d---%H-%M'))+'.log','a')
+
+
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+stream_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
+
+logger.addHandler(stream_handler)
+logger.addHandler(file_handler)
+
 def start_runner():
     def start_loop():
         not_started = True
         while not_started:
-            print('In start loop')
-            time.sleep(5)
+            time.sleep(15)
             try:
                 url_to_start_reminder = os.environ.get("url_to_start_reminder")
                 r = requests.get(url_to_start_reminder)
-                print("status code is: "+str(r.status_code))
+                logger.debug("Status code is: "+str(r.status_code))
                 if r.status_code != 500 and r.status_code != 504:
-                    print('Server started, quiting start_loop')
+                    logger.debug('Server started, quiting start_loop')
                     not_started = False
-                print(r.status_code)
             except Exception as e:
-                print(e)
-                traceback.print_exc()
-                print('Server not yet started')
-            time.sleep(5)
+                # logger.debug(e)
+                # traceback.logger.debug_exc()
+                logger.exception('There has been an exception. Server not yet started')
 
-    print('Started runner')
     thread = threading.Thread(target=start_loop)
     thread.start()
 

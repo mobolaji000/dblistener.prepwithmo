@@ -6,28 +6,50 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
+import logging
+import datetime
+import pytz
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+stream_handler = logging.StreamHandler()
+file_handler = logging.FileHandler(str('logs/')+'logs'+'-'+str(pytz.timezone('US/Central').localize(datetime.datetime.now()).strftime('%Y-%m-%d---%H-%M'))+'.log','a')
+
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+stream_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
+
+logger.addHandler(stream_handler)
+logger.addHandler(file_handler)
+
+
+
 class AWSInstance():
     def __init__(self):
         pass
 
     def getInstance(self, service_name):
-        region_name = "us-east-2"
+        try:
+            region_name = "us-east-2"
 
-        aws_access_key_id = os.environ.get('aws_access_key_id','')
-        aws_secret_access_key = os.environ.get('aws_secret_access_key', '')
+            aws_access_key_id = os.environ.get('AWS_ACCESS_KEY_ID','')
+            aws_secret_access_key = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
 
-        #print("aws_access_key_id is: "+str(aws_access_key_id))
+            if aws_access_key_id != '' and aws_secret_access_key != '':
+                session = boto3.session.Session(aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)
+            else:
+                session = boto3.session.Session()
+            client = session.client(
+                service_name=service_name,
+                region_name=region_name
+            )
+            return client
+        except Exception as e:
+            logger.exception("Exception in creating aws client")
 
-        if aws_access_key_id != '' and aws_secret_access_key != '':
-            session = boto3.session.Session(aws_access_key_id=aws_access_key_id,aws_secret_access_key=aws_secret_access_key)
-        else:
-            session = boto3.session.Session()
-        client = session.client(
-            service_name=service_name,
-            region_name=region_name
-        )
 
-        return client
+
 
     def get_secret(self, secret_name, secret_key):
 
