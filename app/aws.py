@@ -46,7 +46,7 @@ class AWSInstance():
             )
             return client
         except Exception as e:
-            logger.exception("Exception in creating aws client")
+            logger.exception("Exception in creating aws client")#
 
 
 
