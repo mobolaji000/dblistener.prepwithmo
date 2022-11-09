@@ -14,7 +14,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 stream_handler = logging.StreamHandler()
-os.makedirs('/app/logs',exist_ok=True)
+os.makedirs('/service-app/logs',exist_ok=True)
+os.makedirs('/worker-app/logs',exist_ok=True)
 file_handler = logging.FileHandler(str('logs/')+'logs'+'-'+str(pytz.timezone('US/Central').localize(datetime.datetime.now()).strftime('%Y-%m-%d---%H-%M'))+'.log','a')
 
 formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")#
