@@ -21,6 +21,7 @@ services:
         environment:
             - DBUSERNAME=${DBUSERNAME}
             - DBPASSWORD=${DBPASSWORD}
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
         ports:
             - '5003:5003'
         volumes:
