@@ -24,7 +24,7 @@ logger.addHandler(stream_handler)
 logger.addHandler(file_handler)
 
 class RQWorkerSetup():
-    def __init__(self):#
+    def __init__(self):##
         dd = {}
         import os
         for name, value in os.environ.items():
