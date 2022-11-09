@@ -73,7 +73,7 @@ class Config(object):
 
             logger.debug("Environment is prod")
 
-            os.environ["url_to_start_reminder"] = "https://64.227.6.182:5003/"
+            os.environ["url_to_start_reminder"] = "http://64.227.6.182:5003/"
             flask_secret_key = awsInstance.get_secret("vensti_admin", "flask_secret_key")
             SECRET_KEY = awsInstance.get_secret("vensti_admin", "flask_secret_key")
             dbUserName = awsInstance.get_secret("do_db_cred", "username")
