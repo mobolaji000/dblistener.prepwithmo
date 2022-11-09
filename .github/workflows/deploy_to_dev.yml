@@ -65,7 +65,7 @@ jobs:
             echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S systemctl restart vector
             echo "${{ secrets.DROPLET_SUDO_PASSWORD }}" | sudo -S systemctl status vector
             docker compose -f docker-compose-dev.yml build --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY --build-arg DBUSERNAME=$DBUSERNAME --build-arg DBPASSWORD=$DBPASSWORD  --build-arg REDIS_PASSWORD=$REDIS_PASSWORD  
-            docker compose -f docker-compose-dev.yml up
+            docker compose -f docker-compose-dev.yml up -d
             exit
           ENDSSH
 
