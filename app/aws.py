@@ -16,7 +16,7 @@ logger.setLevel(logging.DEBUG)
 stream_handler = logging.StreamHandler()
 file_handler = logging.FileHandler(str('logs/')+'logs'+'-'+str(pytz.timezone('US/Central').localize(datetime.datetime.now()).strftime('%Y-%m-%d---%H-%M'))+'.log','a')
 
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")#
 stream_handler.setFormatter(formatter)
 file_handler.setFormatter(formatter)
 
